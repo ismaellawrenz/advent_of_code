@@ -33,8 +33,7 @@ func main() {
 			} else {
 				acumulador += valor
 			}
-		}
-		if scanner.Text() == "" {
+		} else {
 			if maiorValor < acumulador {
 				maiorValor = acumulador
 			}
