@@ -38,39 +38,52 @@ func primeiraParte() {
 		log.Fatal(err)
 	}
 
-	primeiraLinha := true
+	//primeiraLinha := true
 	var pastas []Pasta
 
 	pasta := Pasta{Nome: "/"}
 	//pastas = append(pastas, pasta)
 
 	var arquivos []Arquivo
-	pattern := regexp.MustCompile(`(\d+)`)
-
+	//pattern := regexp.MustCompile(`(\d+)`)
+	nivel := ""
 	for scanner.Scan() {
-		if !primeiraLinha {
-			fmt.Println(scanner.Text())
-			if strings.Contains(scanner.Text(), "cd ") && scanner.Text() != "$ cd .." {
-				dados := strings.Split(scanner.Text(), " ")
-				pasta.Arquivos = append(pasta.Arquivos, arquivos...)
-				arquivos = nil
-				pastas = append(pastas, pasta)
-				pasta = Pasta{Nome: dados[2]}
-			}
 
-			match := pattern.FindAllString(scanner.Text(), -1)
-			if len(match) > 0 {
-				dados := strings.Split(scanner.Text(), " ")
-				tamanho, _ := strconv.Atoi(dados[0])
-				arquivo := Arquivo{Nome: dados[1], Tamanho: tamanho}
-				arquivos = append(arquivos, arquivo)
-			}
-
-		} else {
-			primeiraLinha = false
+		if strings.Contains(scanner.Text(), "$ cd ") && scanner.Text() != "$ cd .." {
+			dados := strings.Split(scanner.Text(), " ")
+			nivel += "-"
+			fmt.Println(nivel, dados[2], " (dir)")
+		} else if scanner.Text() == "$ cd .." {
+			nivel = nivel[0 : len(nivel)-1]
+		} else if scanner.Text() != "$ ls" {
+			fmt.Println(nivel + scanner.Text())
 		}
 
+		/*
+			if !primeiraLinha {
+
+				if strings.Contains(scanner.Text(), "cd ") && scanner.Text() != "$ cd .." {
+					dados := strings.Split(scanner.Text(), " ")
+					pasta.Arquivos = append(pasta.Arquivos, arquivos...)
+					arquivos = nil
+					pastas = append(pastas, pasta)
+					pasta = Pasta{Nome: dados[2]}
+				}
+
+				match := pattern.FindAllString(scanner.Text(), -1)
+				if len(match) > 0 {
+					dados := strings.Split(scanner.Text(), " ")
+					tamanho, _ := strconv.Atoi(dados[0])
+					arquivo := Arquivo{Nome: dados[1], Tamanho: tamanho}
+					arquivos = append(arquivos, arquivo)
+				}
+
+			} else {
+				primeiraLinha = false
+			}
+		*/
 	}
+
 	pasta.Arquivos = append(pasta.Arquivos, arquivos...)
 	pastas = append(pastas, pasta)
 	somaTotal := 0
@@ -80,7 +93,7 @@ func primeiraParte() {
 			somaDiretorio += pastas[i].Arquivos[j].Tamanho
 		}
 		if somaDiretorio <= 100000 {
-			somaTotal += somaDiretorio
+			somaTotal = somaDiretorio + somaTotal
 		}
 		somaDiretorio = 0
 	}
