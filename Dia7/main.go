@@ -25,6 +25,10 @@ type Arquivo struct {
 	Nome    string
 	Tamanho int
 }
+type TamanhoPasta struct {
+	Nome    string
+	Tamanho int
+}
 
 func primeiraParte() {
 	file, err := os.Open("input.txt")
@@ -47,6 +51,7 @@ func primeiraParte() {
 	var arquivos []Arquivo
 	//pattern := regexp.MustCompile(`(\d+)`)
 	nivel := ""
+
 	for scanner.Scan() {
 
 		if strings.Contains(scanner.Text(), "$ cd ") && scanner.Text() != "$ cd .." {
