@@ -26,7 +26,8 @@ type TamanhoPasta struct {
 
 func main() {
 
-	primeiraParte()
+	//primeiraParte()
+	segundaParte()
 
 }
 
@@ -99,5 +100,73 @@ func primeiraParte() {
 	}
 
 	fmt.Println("Resultado final da primeira parte->", somaTotal)
+
+}
+func segundaParte() {
+	file, err := os.Open("input.txt")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	if err := scanner.Err(); err != nil {
+		log.Fatal(err)
+	}
+
+	pattern := regexp.MustCompile(`(\d+)`)
+
+	var arquivos []Arquivo
+	var caminho []string
+
+	for scanner.Scan() {
+
+		if strings.Contains(scanner.Text(), "$ cd") {
+			if strings.Contains(scanner.Text(), "$ cd ..") {
+				caminho = caminho[0 : len(caminho)-1]
+			} else {
+				dados := strings.Split(scanner.Text(), " ")
+				caminho = append(caminho, dados[2])
+			}
+		}
+
+		match := pattern.FindAllString(scanner.Text(), -1)
+		if len(match) > 0 {
+			dados := strings.Split(scanner.Text(), " ")
+			tamanho, _ := strconv.Atoi(dados[0])
+			arquivo := Arquivo{Nome: strings.Join(caminho, `|`) + `|` + dados[1], Tamanho: tamanho}
+			arquivos = append(arquivos, arquivo)
+		}
+
+	}
+	var pastas []Arquivo
+	for i := 0; i < len(arquivos); i++ {
+		d := strings.Split(arquivos[i].Nome, "|")
+		var caminhoInteiro = ""
+		for j := 0; j < len(d)-1; j++ {
+			caminhoInteiro += d[j] + "|"
+			achou := false
+			for q := 0; q < len(pastas); q++ {
+				if pastas[q].Nome == caminhoInteiro {
+					pastas[q].Tamanho += arquivos[i].Tamanho
+					achou = true
+				}
+			}
+			if !achou {
+				pasta := Arquivo{Nome: caminhoInteiro, Tamanho: arquivos[i].Tamanho}
+				pastas = append(pastas, pasta)
+			}
+		}
+	}
+	tamanhoIdeal := 70000000
+	//espaço total - diretorio raiz - quantidade necessaria
+	//70000000-41412830-30000000=-1.412.830
+	for i := 0; i < len(pastas); i++ {
+		if pastas[i].Tamanho >= 1412830 && pastas[i].Tamanho < tamanhoIdeal {
+			tamanhoIdeal = pastas[i].Tamanho
+		}
+	}
+
+	fmt.Println("Resultado final da primeira parte->", tamanhoIdeal)
 
 }
