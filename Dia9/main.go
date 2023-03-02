@@ -27,17 +27,24 @@ func primeiraParte() {
 		log.Fatal(err)
 	}
 
-	var matris [200][200]string
+	var matris [20][20]string
 
 	for i := 0; i < len(matris); i++ {
 		for e := 0; e < len(matris[i]); e++ {
 			matris[i][e] = "."
 		}
 	}
-	matris[40][40] = "H"
-	ultimaLinha := 40
-	ultimaColuna := 40
+	matris[10][10] = "H"
+	ultimaLinha := 10
+	ultimaColuna := 10
 
+	for i := 0; i < len(matris); i++ {
+		for e := 0; e < len(matris[i]); e++ {
+			fmt.Print(matris[i][e])
+		}
+		fmt.Println()
+	}
+	fmt.Println()
 	for scanner.Scan() {
 		d := strings.Split(scanner.Text(), " ")
 
@@ -48,8 +55,13 @@ func primeiraParte() {
 			if novoValor < 0 {
 				novoValor = 0
 			}
-			matris[ultimaLinha][ultimaColuna] = "#"
 			matris[ultimaLinha][novoValor] = "H"
+
+			matris[ultimaLinha][ultimaColuna+1] = "#" //ultimo lugar do T
+			for i := novoValor + 1; i < ultimaColuna+quantidade; i++ {
+				matris[ultimaLinha][i] = "#" //movimenta o T
+			}
+			matris[ultimaLinha][novoValor+1] = "T"
 			ultimaColuna = novoValor
 		}
 		if d[0] == "R" {
@@ -57,8 +69,14 @@ func primeiraParte() {
 			if novoValor < 0 {
 				novoValor = 0
 			}
-			matris[ultimaLinha][ultimaColuna] = "#"
+
 			matris[ultimaLinha][novoValor] = "H"
+			matris[ultimaLinha][ultimaColuna-1] = "#" //ultimo lugar do T
+			for i := ultimaColuna; i < novoValor; i++ {
+				matris[ultimaLinha][i] = "#"
+			}
+			matris[ultimaLinha][novoValor-1] = "T"
+
 			ultimaColuna = novoValor
 		}
 		if d[0] == "U" {
@@ -66,8 +84,15 @@ func primeiraParte() {
 			if novoValor < 0 {
 				novoValor = 0
 			}
-			matris[ultimaLinha][ultimaColuna] = "#"
+
 			matris[novoValor][ultimaColuna] = "H"
+
+			matris[ultimaLinha+1][ultimaColuna] = "#"
+			for i := novoValor; i < ultimaLinha; i++ {
+				matris[i][ultimaColuna] = "#" //movimenta o T
+			}
+			matris[novoValor+1][ultimaColuna] = "T"
+
 			ultimaLinha = novoValor
 
 		}
@@ -76,13 +101,23 @@ func primeiraParte() {
 			if novoValor < 0 {
 				novoValor = 0
 			}
-			matris[ultimaLinha][ultimaColuna] = "#"
+
 			matris[novoValor][ultimaColuna] = "H"
+			matris[ultimaLinha-1][ultimaColuna] = "#"
+			for i := ultimaLinha; i < novoValor; i++ {
+				matris[i][ultimaColuna] = "#" //movimenta o T
+			}
+			matris[novoValor-1][ultimaColuna] = "T"
+
 			ultimaLinha = novoValor
 		}
-
+		for i := 0; i < len(matris); i++ {
+			for e := 0; e < len(matris[i]); e++ {
+				fmt.Print(matris[i][e])
+			}
+			fmt.Println()
+		}
+		fmt.Println()
 	}
-
-	fmt.Print(matris)
 
 }
